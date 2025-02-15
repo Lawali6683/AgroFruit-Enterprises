@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFruit Enterprises</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+    <style>
+        /* General Settings */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2c3e50;
+    padding: 10px;
+    color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo img {
+    height: 40px;
+    
+}
+
+#menu-btn {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Menu */
+nav {
+    display: none;
+    background: #34495e;
+    padding: 10px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+nav ul li {
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Banner */
+.banner {
+    position: relative;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.banner img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+}
+
+/* Main Content */
+main {
+    padding: 20px;
+    text-align: center;
+}
+
+button {
+    background: #27ae60;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+button:hover {
+    background: #219150;
+}
+
+/* Hidden Forms */
+.hidden {
+    display: none;
+}
+
+/* Investment Containers */
+.investment-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.container {
+    text-align: center;
+    margin-bottom: 20px;
+    width: 80%;
+}
+
+.container img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.container p {
+    background: #ecf0f1;
+    padding: 10px;
+}
+
+/* Footer */
+footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+ input, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="fruit.png" alt="AgroFruit Logo">
+        </div>
+        <span id="menu-btn"></span>
+    </header>
+
+    <!-- Menu -->
+    <nav id="menu">
+        <ul>
+            <li>Contact us</li>
+            <li>Contact us for more information</li>
+            <li>Contact for investment</li>
+            <li>Contact for partnership</li>
+        </ul>
+    </nav>
+
+    <!-- Banner Section -->
+    <section class="banner">
+        <img src="ba.png" alt="AgroFruit Banner">
+        <div class="banner-text">
+            <h1>Welcome to AgroFruit Enterprises</h1>
+            <p>Bringing nature closer to you</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main>
+        <button id="costume-btn">Are you an AgroFruit Costumes?</button>
+        <div id="costume-form" class="hidden">
+            <h2>Input your AgroFruit ID To Continue</h2>
+            <input type="text" id="costume-id" placeholder="Input your AgroFruit Costume ID">
+            <button onclick="checkCostume()">Submit</button>
+        </div>
+
+        <button id="worker-btn">Are you a AgroFruit Workers</button>
+        <div id="worker-form" class="hidden">
+            <h2>Input your AgroFruit Staff ID to Continue</h2>
+            <input type="text" id="worker-id" placeholder="Input your Staff ID">
+            <button onclick="checkWorker()">Submit</button>
+        </div>
+        
+
+       
+        <div class="investment-section">
+            <div class="container">
+                <img src="g1.png" alt="Investment 1">
+                <p>How AgroFruit gets you profit</p>
+            </div>
+            <div class="container">
+                <img src="g2.png" alt="Investment 2">
+                <p>Join AgroFruit for a better future</p>
+            </div>
+            <div class="container">
+                <img src="g3.png" alt="Investment 3">
+                <p>Secure your future with AgroFruit</p>
+            </div>
+            <div class="container">
+                <img src="g4.png" alt="Investment 3">
+                <p>Contact us</p>
+                <i style="font-size:10px;">agrofruitenterprises@gmail.com</i>
+                <i>+2348166836059</i>
+                <i>
+                    Location Zaria Road Samuru Gusau, 
+                </i>
+            </div>
+        </div>
+    </main>
+<section>
+    <center>
+        <i>
+            AgroFruit is an opportunity to partner in fruit farming and offers individuals the chance to invest or provide loans in agriculture and material business technology. Contact us for more details.
+
+        </i>
+    </center>
+</section>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; AgroFruit Enterprises | All Rights Reserved</p>
+    </footer>
+<script>
+    // Toggle menu
+document.getElementById('menu-btn').addEventListener('click', function() {
+    let menu = document.getElementById('menu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+});
+
+// Show and Hide Costume Form
+document.getElementById('costume-btn').addEventListener('click', function() {
+    let form = document.getElementById('costume-form');
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+});
+
+// Show and Hide Worker Form
+document.getElementById('worker-btn').addEventListener('click', function() {
+    let form = document.getElementById('worker-form');
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+});
+
+// Validate Costume ID
+function checkCostume() {
+    let id = document.getElementById('costume-id').value;
+    if (id !== '12345') {
+        alert('This ID is not correct, contact AgroFruit Teams.');
+    } else {
+        alert('Welcome, AgroFruit Costume Member!');
+    }
+}
+
+// Validate Worker ID
+function checkWorker() {
+    let id = document.getElementById('worker-id').value;
+    if (id === 'worker2024') {
+        alert('This staff ID is correct, contact AgroFruit.');
+    } else {
+        alert('Invalid staff ID, please check again.');
+    }
+}
+
+</script>
+</body>
+</html>
