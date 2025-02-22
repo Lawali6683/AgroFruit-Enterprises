@@ -3,7 +3,8 @@
   "builds": [
     { "src": "api/message.js", "use": "@vercel/node@4" },
     { "src": "api/webhook.js", "use": "@vercel/node@4" },
-    { "src": "index.html", "use": "@vercel/static" }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "*(css|js|png|jpg|jpeg|svg|ico|gif|webp)", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/message", "dest": "/api/message.js" },
