@@ -4,11 +4,14 @@
     { "src": "api/message.js", "use": "@vercel/node@4" },
     { "src": "api/webhook.js", "use": "@vercel/node@4" },
     { "src": "*.html", "use": "@vercel/static" },
-    { "src": "assets/**/*", "use": "@vercel/static" }
+    { "src": "assets/**/*", "use": "@vercel/static" },
+    { "src": "images/**/*", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/message", "dest": "/api/message.js" },
     { "src": "/api/webhook", "dest": "/api/webhook.js" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/images/(.*)", "dest": "/images/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
