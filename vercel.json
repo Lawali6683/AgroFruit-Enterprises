@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "api/message.js": { "runtime": "nodejs18.x" },
-    "api/webhook.js": { "runtime": "nodejs18.x" }
-  },
+  "builds": [
+    { "src": "api/message.js", "use": "@vercel/node@4" },
+    { "src": "api/webhook.js", "use": "@vercel/node@4" }
+  ],
   "routes": [
     { "src": "/api/message", "dest": "/api/message.js" },
     { "src": "/api/webhook", "dest": "/api/webhook.js" }
