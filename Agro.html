@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ha">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFruit Register/Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px gray;
+            max-width: 400px;
+            margin: auto;
+        }
+        h2 {
+            color: green;
+        }
+        .desc {
+            font-size: 14px;
+            color: gray;
+        }
+        .buttons {
+            margin: 10px 0;
+        }
+        button {
+            background: green;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .form-container {
+            display: none;
+            margin-top: 10px;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+        .images img {
+            width: 80px;
+            height: 80px;
+            margin: 5px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>AgroFruit Enterprises </h2>
+        
+       <p class="desc"> Welcome, our valued customers! How is business? Register with this new system to make payments for the goods you receive from AgroFruit agents. This is a simple and convenient method that allows you to make payments and receive payment confirmation via email at any time.
+       This system will help resolve issues we face when some people fail to pay AgroFruit for their goods. Do business with honesty and integrity to maximize your profits. With AgroFruit, you can receive goods on credit from our agents and pay after selling them.
+       AgroFruit is committed to supplying you with quality products to help you grow your business profitably. </p>
+        
+        <p>Hausa</p>
+        <p class="desc"> Barka da zuwa costumes din mu kuna lafiya ya kasuwa? Ku yi register da wannan sabon tsarin domin ku dinga biyan kayan da kuka karba daga AgroFruit agent, wannan haya ce Mai sauki da zaku biya ku kuma kuga shedar biyan kudin ku cikin email, kowane lokaci, Hakan zai magance rigimar da muke samu, Ida wasu basa biyan AgroFruit kudi Kaya, ku reke kasuwanci ku da gaskiya da amana ku samu riba mai yawa AgroFruit domin kabar kayan bashi daga AgroFruit agent kuma a biya Bayan gama kasuwa, 
+            AgroFruit zamu din turo maku da kaya masu kyau domin ku samu riba, </p>
+
+        <div class="buttons">
+            <button onclick="showRegister()">Register</button>
+            <button onclick="showLogin()">Login</button>
+        </div>
+
+        <div id="register-form" class="form-container">
+            <h3>Register</h3>
+            <input type="text" id="fullname" placeholder="Full Name">
+            <input type="email" id="email" placeholder="Email">
+            <input type="text" id="costumeId" placeholder="AgroFruit Costumes ID">
+            <input type="text" id="phone" placeholder="Phone Number">
+            <input type="password" id="password" placeholder="Password">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+            <button onclick="registerUser()">Submit</button>
+            <p class="error" id="register-error"></p>
+        </div>
+
+        <div id="login-form" class="form-container">
+            <h3>Login</h3>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="loginUser()">Submit</button>
+            <p class="error" id="login-error"></p>
+        </div>
+
+        <div class="images">
+            <img src="t1.png" alt="Tumatur">
+            <img src="t2.png" alt="Albasa">
+            <img src="t3.png" alt="Wake">
+            <img src="t4.png" alt="Tarugu">
+        </div>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module">
+        import { app } from './firebase.js';
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+
+        // **Nunawa da ɓoye forms**
+        window.showRegister = function () {
+            document.getElementById("register-form").style.display = "block";
+            document.getElementById("login-form").style.display = "none";
+        }
+
+        window.showLogin = function () {
+            document.getElementById("register-form").style.display = "none";
+            document.getElementById("login-form").style.display = "block";
+        }
+
+        // **Register User**
+        window.registerUser = function () {
+            const fullname = document.getElementById("fullname").value;
+            const email = document.getElementById("email").value;
+            const costumeId = document.getElementById("costumeId").value;
+            const phone = document.getElementById("phone").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const errorMsg = document.getElementById("register-error");
+
+            if (password !== confirmPassword) {
+                errorMsg.textContent = "Passwords do not match!";
+                return;
+            }
+
+            if (costumeId !== "Ag768") {
+                errorMsg.textContent = "AgroFruit Costumes ID not correct!";
+                return;
+            }
+
+            const usersRef = ref(db, 'users/' + costumeId);
+
+            get(usersRef).then(snapshot => {
+                if (snapshot.exists()) {
+                    errorMsg.textContent = "Costumes ID an riga an yi register!";
+                } else {
+                    createUserWithEmailAndPassword(auth, email, password)
+                        .then(userCredential => {
+                            const user = userCredential.user;
+                            set(ref(db, 'users/' + user.uid), {
+                                fullname,
+                                email,
+                                costumeId,
+                                phone
+                            });
+                            window.location.href = "dashboard.html";
+                        })
+                        .catch(error => {
+                            errorMsg.textContent = error.message;
+                        });
+                }
+            });
+        }
+
+        // **Login User**
+        window.loginUser = function () {
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+            const errorMsg = document.getElementById("login-error");
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    window.location.href = "dashboard.html";
+                })
+                .catch(error => {
+                    errorMsg.textContent = error.message;
+                });
+        }
+    </script>
+</body>
+</html>

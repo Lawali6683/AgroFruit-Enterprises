@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ha">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFruit Wallet Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #008000;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: auto;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        main {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .wallet {
+            background: #008000;
+            color: white;
+            padding: 20px;
+            font-size: 24px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .account-details {
+            text-align: left;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #008000;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #006400;
+        }
+
+        .copy-btn {
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="fruit.png" alt="AgroFruit Logo" class="logo">
+        <h1>AgroFruit Wallet</h1>
+    </header>
+
+    <main>
+        <section class="user-info">
+            <h2 id="welcomeUser">You Are welcome , Loading...</h2>
+          p> This money will help us track how much you have paid, how much the Distributor will deduct, and how much goods will be added to your account. Please make sure you collect the goods release document from the Distributor Admin. You can make payments starting from ₦3,500 and above, as Paystack deducts a fee. However, don't worry—any additional fees are covered by the AgroFruit Team. </p>
+
+            <p>Hausa </p>
+            <p>Wannan kudi zai taimaka muga nawa ka biya kuma nawa Mai Raba Kaya zai cire kuma kayan nawa zai Kara ma. Ku tabatar kun anshi takadun kabar kayan ku da ga admin Mai Raba Kaya, zaku iya biya daga 3500 abun da yayi sama domin Paystack suna dibar fee, Amma kada ku damu kowane Fee daga cikin AgroFruit Teams</p>
+            
+            <div class="wallet">
+                <h3>Wallet Balance</h3>
+                <p id="userBalance">₦0.00</p>
+            </div>
+
+            <div class="account-details">
+                <h3>Bayani na asusun ka</h3>
+                <p><strong>Account Name:</strong> <span id="accountName">Loading...</span></p>
+                <p><strong>Bank Name:</strong> <span id="bankName">Loading...</span></p>
+                <p><strong>Account Number:</strong> <span id="accountNumber">Loading...</span></p>
+                <button class="copy-btn" onclick="copyAccountDetails()">Kwafi Bayanan Asusunka</button>
+            </div>
+
+            <button id="logoutBtn">Fita</button>
+        </section>
+
+        <section class="payment">Payment 
+            <h3></h3>
+            <p> For every payment you make through Paystack, they will send you a payment confirmation to your email address. We have created this payment method in your wallet to avoid payment issues we have been experiencing. </p>
+            <p>Hausa </p>
+       <p> Kowane biyan kudi da kuka yi ta Paystack, za su aiko muku da shedar biyan kudi cikin adireshin imel ɗinku. Mun ƙirƙiri wannan hanyar biyan kudi a cikin wallet ɗinku domin guje wa matsalolin biyan kuɗi da muke fuskanta. </p>    
+            <button id="payNow">Copy your account number, and transfer or POS</button>
+        </section>
+    </main>
+    
+    
+       <script type="module">
+    import { app } from './firebase.js';
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const userId = user.uid;
+            const userRef = ref(db, `users/${userId}`);
+
+            get(userRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    
+                    document.getElementById('welcomeUser').innerText = `Sannu da zuwa, ${userData.fullName || "Guest"}`;
+                    document.getElementById('userBalance').innerText = `₦${userData.userBalance || "0.00"}`;
+
+                    if (userData.accountDetails) {
+                        document.getElementById('accountName').innerText = userData.accountDetails.accountName || "N/A";
+                        document.getElementById('bankName').innerText = userData.accountDetails.bankName || "N/A";
+                        document.getElementById('accountNumber').innerText = userData.accountDetails.accountNumber || "N/A";
+                    } else {
+                        console.log("Babu bayanan accountDetails.");
+                    }
+                } else {
+                    console.log("Babu bayanan user a database.");
+                }
+            }).catch((error) => {
+                console.error("Error: ", error);
+            });
+
+        } else {
+            window.location.href = "agro.html"; // Mai da user zuwa login idan bai shiga ba
+        }
+    });
+
+    // Logout function
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        signOut(auth).then(() => {
+            window.location.href = "agro.html";
+        }).catch((error) => {
+            console.error("Error: ", error);
+        });
+    });
+
+    // Paystack Payment
+    document.getElementById('payNow').addEventListener('click', () => {
+        let handler = PaystackPop.setup({
+            key: 'your-public-key-here', // Maye gurbin wannan da Paystack public key dinka
+            email: auth.currentUser.email,
+            amount: 350000, // 3500 Naira (Paystack uses kobo)
+            currency: 'NGN',
+            callback: function(response) {
+                alert('Payment successful! Reference: ' + response.reference);
+                // Update database domin karawa user balance
+            },
+            onClose: function() {
+                alert('Payment window closed.');
+            }
+        });
+        handler.openIframe();
+    });
+
+    // Function don kwafa account details
+    function copyAccountDetails() {
+        const accountName = document.getElementById("accountName").innerText;
+        const bankName = document.getElementById("bankName").innerText;
+        const accountNumber = document.getElementById("accountNumber").innerText;
+        const accountDetails = `Account Name: ${accountName}\nBank Name: ${bankName}\nAccount Number: ${accountNumber}`;
+
+        navigator.clipboard.writeText(accountDetails).then(() => {
+            alert("Bayanai na asusu sun kwafu!");
+        }).catch(err => {
+            console.error("Error copying text: ", err);
+        });
+    }
+</script>
+    </script>
+</body>
+</html>
