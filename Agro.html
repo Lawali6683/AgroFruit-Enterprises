@@ -109,82 +109,64 @@
 
     <script type="module" src="firebase.js"></script>
     <script type="module">
-        import { app } from './firebase.js';
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { app } from './firebase.js';
+    import { getDatabase, ref } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
-        const db = getDatabase(app);
-        const auth = getAuth(app);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
 
-        // **Nunawa da ɓoye forms**
-        window.showRegister = function () {
-            document.getElementById("register-form").style.display = "block";
-            document.getElementById("login-form").style.display = "none";
+    // **Nunawa da ɓoye forms**
+    window.showRegister = function () {
+        document.getElementById("register-form").style.display = "block";
+        document.getElementById("login-form").style.display = "none";
+    }
+
+    window.showLogin = function () {
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("login-form").style.display = "block";
+    }
+
+    // **Register User**
+    window.registerUser = function () {
+        const fullname = document.getElementById("fullname").value;
+        const email = document.getElementById("email").value;
+        const costumeId = document.getElementById("costumeId").value;
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const errorMsg = document.getElementById("register-error");
+
+        // Duba idan password din bai dace ba
+        if (password !== confirmPassword) {
+            errorMsg.textContent = "Passwords do not match!";
+            return;
         }
 
-        window.showLogin = function () {
-            document.getElementById("register-form").style.display = "none";
-            document.getElementById("login-form").style.display = "block";
+        // Idan costumeId ba shine "Agro789" ba
+        if (costumeId !== "Agro789") {
+            errorMsg.textContent = "This Costumes ID is not correct!";
+            return;
         }
 
-        // **Register User**
-        window.registerUser = function () {
-            const fullname = document.getElementById("fullname").value;
-            const email = document.getElementById("email").value;
-            const costumeId = document.getElementById("costumeId").value;
-            const phone = document.getElementById("phone").value;
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
-            const errorMsg = document.getElementById("register-error");
+        // Idan costumeId shine "Agro789" kawai a nuna error ba tare da bin Firebase ba
+        errorMsg.textContent = "This AgroFruit Costumes ID has already been registered! Please login.";
+    }
 
-            if (password !== confirmPassword) {
-                errorMsg.textContent = "Passwords do not match!";
-                return;
-            }
+    // **Login User**
+    window.loginUser = function () {
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+        const errorMsg = document.getElementById("login-error");
 
-            if (costumeId !== "Agro789") {
-                errorMsg.textContent = "AgroFruit Costumes ID not correct!";
-                return;
-            }
-
-            const usersRef = ref(db, 'users/' + costumeId);
-
-            get(usersRef).then(snapshot => {
-                if (snapshot.exists()) {
-                    errorMsg.textContent = "Costumes ID has already been registered! Login";
-                } else {
-                    createUserWithEmailAndPassword(auth, email, password)
-                        .then(userCredential => {
-                            const user = userCredential.user;
-                            set(ref(db, 'users/' + user.uid), {
-                                fullname,
-                                email,
-                                costumeId,
-                                phone
-                            });
-                            window.location.href = "dashboard.html";
-                        })
-                        .catch(error => {
-                            errorMsg.textContent = error.message;
-                        });
-                }
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                window.location.href = "dashboard.html";
+            })
+            .catch(error => {
+                errorMsg.textContent = "Login error: " + error.message;
             });
-        }
-
-        // **Login User**
-        window.loginUser = function () {
-            const email = document.getElementById("loginEmail").value;
-            const password = document.getElementById("loginPassword").value;
-            const errorMsg = document.getElementById("login-error");
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    window.location.href = "dashboard.html";
-                })
-                .catch(error => {
-                    errorMsg.textContent = error.message;
-                });
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
