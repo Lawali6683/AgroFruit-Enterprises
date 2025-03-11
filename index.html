@@ -8,142 +8,141 @@
     <script defer src="script.js"></script>
     <style>
         /* General Settings */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
 
-/* Header */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #2c3e50;
-    padding: 10px;
-    color: white;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2c3e50;
+            padding: 10px;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
 
-.logo img {
-    height: 40px;
-    
-}
+        .logo img {
+            height: 40px;
+        }
 
-#menu-btn {
-    font-size: 24px;
-    cursor: pointer;
-}
+        #menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+        }
 
-/* Menu */
-nav {
-    display: none;
-    background: #34495e;
-    padding: 10px;
-    position: absolute;
-    top: 50px;
-    left: 0;
-    width: 100%;
-}
+        /* Menu */
+        nav {
+            display: none;
+            background: #34495e;
+            padding: 10px;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100%;
+        }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    text-align: center;
-}
+        nav ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
 
-nav ul li {
-    padding: 10px;
-    color: white;
-    cursor: pointer;
-}
+        nav ul li {
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+        }
 
-/* Banner */
-.banner {
-    position: relative;
-    text-align: center;
-    margin-top: 60px;
-}
+        /* Banner */
+        .banner {
+            position: relative;
+            text-align: center;
+            margin-top: 60px;
+        }
 
-.banner img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-}
+        .banner img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
 
-.banner-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 10px;
-}
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+        }
 
-/* Main Content */
-main {
-    padding: 20px;
-    text-align: center;
-}
+        /* Main Content */
+        main {
+            padding: 20px;
+            text-align: center;
+        }
 
-button {
-    background: #27ae60;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    margin: 10px;
-}
+        button {
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+        }
 
-button:hover {
-    background: #219150;
-}
+        button:hover {
+            background: #219150;
+        }
 
-/* Hidden Forms */
-.hidden {
-    display: none;
-}
+        /* Hidden Forms */
+        .hidden {
+            display: none;
+        }
 
-/* Investment Containers */
-.investment-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
+        /* Investment Containers */
+        .investment-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
 
-.container {
-    text-align: center;
-    margin-bottom: 20px;
-    width: 80%;
-}
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 80%;
+        }
 
-.container img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
+        .container img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
 
-.container p {
-    background: #ecf0f1;
-    padding: 10px;
-}
+        .container p {
+            background: #ecf0f1;
+            padding: 10px;
+        }
 
-/* Footer */
-footer {
-    background: #2c3e50;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: 20px;
-}
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
 
- input, select {
+        input, select {
             width: 100%;
             padding: 10px;
             font-size: 14px;
@@ -244,43 +243,42 @@ footer {
     </footer>
 <script>
     // Toggle menu
-document.getElementById('menu-btn').addEventListener('click', function() {
-    let menu = document.getElementById('menu');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-});
+    document.getElementById('menu-btn').addEventListener('click', function() {
+        let menu = document.getElementById('menu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
 
-// Show and Hide Costume Form
-document.getElementById('costume-btn').addEventListener('click', function() {
-    let form = document.getElementById('costume-form');
-    form.style.display = form.style.display === 'block' ? 'none' : 'block';
-});
+    // Show and Hide Costume Form
+    document.getElementById('costume-btn').addEventListener('click', function() {
+        let form = document.getElementById('costume-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    });
 
-// Show and Hide Worker Form
-document.getElementById('worker-btn').addEventListener('click', function() {
-    let form = document.getElementById('worker-form');
-    form.style.display = form.style.display === 'block' ? 'none' : 'block';
-});
+    // Show and Hide Worker Form
+    document.getElementById('worker-btn').addEventListener('click', function() {
+        let form = document.getElementById('worker-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    });
 
-// Validate Costume ID
-function checkCostume() {
-    let id = document.getElementById('costume-id').value;
-    if (id !== '12345') {
-        alert('This ID is not correct, contact AgroFruit Teams.');
-    } else {
-        alert('Welcome, AgroFruit Costume Member!');
+    // Validate Costume ID
+    function checkCostume() {
+        let id = document.getElementById('costume-id').value;
+        if (id === 'Agro789') {
+            window.location.href = 'Agro.html';
+        } else {
+            alert('This ID is not correct, contact AgroFruit Teams.');
+        }
     }
-}
 
-// Validate Worker ID
-function checkWorker() {
-    let id = document.getElementById('worker-id').value;
-    if (id === 'worker2024') {
-        alert('This staff ID is correct, contact AgroFruit.');
-    } else {
-        alert('Invalid staff ID, please check again.');
+    // Validate Worker ID
+    function checkWorker() {
+        let id = document.getElementById('worker-id').value;
+        if (id === 'worker2024') {
+            alert('This staff ID is correct, contact AgroFruit.');
+        } else {
+            alert('Invalid staff ID, please check again.');
+        }
     }
-}
-
 </script>
 </body>
 </html>
