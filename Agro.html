@@ -142,7 +142,7 @@
                 return;
             }
 
-            if (costumeId !== "Ag768") {
+            if (costumeId !== "Agro789") {
                 errorMsg.textContent = "AgroFruit Costumes ID not correct!";
                 return;
             }
@@ -151,7 +151,7 @@
 
             get(usersRef).then(snapshot => {
                 if (snapshot.exists()) {
-                    errorMsg.textContent = "Costumes ID an riga an yi register!";
+                    errorMsg.textContent = "Costumes ID has already been registered! Login";
                 } else {
                     createUserWithEmailAndPassword(auth, email, password)
                         .then(userCredential => {
