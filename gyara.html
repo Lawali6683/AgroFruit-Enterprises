@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+#login-container, #admin-panel {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+input, button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+button {
+    background: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #218838;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+    </style>
+</head>
+<body>
+
+    <div id="login-container">
+        <h2>Admin Login</h2>
+        <input type="email" id="admin-email" placeholder="Enter Admin Email">
+        <input type="password" id="admin-password" placeholder="Enter Password">
+        <button id="login-btn">Login</button>
+        <p id="login-error" class="error"></p>
+    </div>
+
+    <div id="admin-panel" style="display: none;">
+        <h2>Admin Panel</h2>
+        <input type="text" id="costumes-id" placeholder="Enter Costumes ID">
+        <button id="search-btn">Search</button>
+        <p id="search-error" class="error"></p>
+
+        <div id="user-details" style="display: none;">
+            <h3>User Details</h3>
+            <label>Full Name:</label>
+            <input type="text" id="fullName">
+            <label>Email:</label>
+            <input type="email" id="email">
+            <label>Investment:</label>
+            <input type="number" id="investment">
+            <label>Daily Upgrade:</label>
+            <input type="number" id="dailyUpgrade">
+            <label>User Balance:</label>
+            <input type="number" id="userBalance">
+
+            <button id="update-btn">Update</button>
+            <p id="update-success" class="success"></p>
+        </div>
+
+        <button id="logout-btn">Logout</button>
+    </div>
+
+    <script type="module" >
+    import { app } from './firebase.js';
+import { 
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { 
+    getDatabase, ref, get, update 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// DOM Elements
+const loginContainer = document.getElementById("login-container");
+const adminPanel = document.getElementById("admin-panel");
+const loginBtn = document.getElementById("login-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const searchBtn = document.getElementById("search-btn");
+const updateBtn = document.getElementById("update-btn");
+
+// Inputs
+const adminEmail = document.getElementById("admin-email");
+const adminPassword = document.getElementById("admin-password");
+const costumesIdInput = document.getElementById("costumes-id");
+
+// Error Messages
+const loginError = document.getElementById("login-error");
+const searchError = document.getElementById("search-error");
+const updateSuccess = document.getElementById("update-success");
+
+// User Details Inputs
+const userDetails = document.getElementById("user-details");
+const fullNameInput = document.getElementById("fullName");
+const emailInput = document.getElementById("email");
+const investmentInput = document.getElementById("investment");
+const dailyUpgradeInput = document.getElementById("dailyUpgrade");
+const userBalanceInput = document.getElementById("userBalance");
+
+let currentUserUID = null; // Za a ajiye UID na user da aka samu
+
+// ** Admin Login **
+loginBtn.addEventListener("click", () => {
+    const email = adminEmail.value;
+    const password = adminPassword.value;
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+            loginContainer.style.display = "none";
+            adminPanel.style.display = "block";
+        })
+        .catch(error => {
+            loginError.textContent = "Invalid email or password";
+        });
+});
+
+// ** Admin Logout **
+logoutBtn.addEventListener("click", () => {
+    signOut(auth).then(() => {
+        loginContainer.style.display = "block";
+        adminPanel.style.display = "none";
+    });
+});
+
+// ** Auto Check Login Status **
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loginContainer.style.display = "none";
+        adminPanel.style.display = "block";
+    } else {
+        loginContainer.style.display = "block";
+        adminPanel.style.display = "none";
+    }
+});
+
+// ** Search Costumes ID **
+searchBtn.addEventListener("click", () => {
+    const costumesId = costumesIdInput.value.trim();
+    if (!costumesId) {
+        searchError.textContent = "Please enter a valid Costumes ID";
+        return;
+    }
+
+    // Search in Firebase
+    const usersRef = ref(db, "users");
+    get(usersRef).then(snapshot => {
+        if (snapshot.exists()) {
+            let foundUser = null;
+
+            snapshot.forEach(childSnapshot => {
+                const userData = childSnapshot.val();
+                if (userData.paystackCustomerId === costumesId) {
+                    foundUser = { id: childSnapshot.key, ...userData };
+                }
+            });
+
+            if (foundUser) {
+                currentUserUID = foundUser.id; // Ajiye UID na user da aka samu
+                fullNameInput.value = foundUser.fullName;
+                emailInput.value = foundUser.email;
+                investmentInput.value = foundUser.investment;
+                dailyUpgradeInput.value = foundUser.dailyUpgrade;
+                userBalanceInput.value = foundUser.userBalance;
+                userDetails.style.display = "block";
+                searchError.textContent = "";
+            } else {
+                searchError.textContent = "No user found with this Costumes ID";
+            }
+        }
+    });
+});
+
+// ** Update User Data **
+updateBtn.addEventListener("click", () => {
+    if (!currentUserUID) {
+        updateSuccess.textContent = "No user selected for update!";
+        return;
+    }
+
+    const updatedData = {
+        fullName: fullNameInput.value,
+        email: emailInput.value,
+        investment: Number(investmentInput.value),
+        dailyUpgrade: Number(dailyUpgradeInput.value),
+        userBalance: Number(userBalanceInput.value),
+    };
+
+    const userRef = ref(db, `users/${currentUserUID}`);
+    update(userRef, updatedData)
+        .then(() => {
+            updateSuccess.textContent = "Update Successful!";
+            // Sake karanta bayanan user daga database domin tabbatarwa
+            get(userRef).then(snapshot => {
+                if (snapshot.exists()) {
+                    const newData = snapshot.val();
+                    fullNameInput.value = newData.fullName;
+                    emailInput.value = newData.email;
+                    investmentInput.value = newData.investment;
+                    dailyUpgradeInput.value = newData.dailyUpgrade;
+                    userBalanceInput.value = newData.userBalance;
+                }
+            });
+        })
+        .catch(error => {
+            updateSuccess.textContent = "Update Failed!";
+        });
+});
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFruit Support Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    margin-bottom: 20px;
+    Font-size: 20px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    background: #fff;
+    color: #0072ff;
+    padding: 12px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background: #0072ff;
+    color: white;
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to AgroFruit Support Manager</h1>
+        <div class="menu">
+            <button onclick="openPage('payment.html')">Payment Check</button>
+            <button onclick="openPage('CostumesChecking.html')">Costumes Check</button>
+            <button onclick="openPage('admin.html')">Admin</button>
+            <button onclick="openPage('comfim.html')">Payment Confirm</button>
+            <button onclick="openPage('gyara.html')">Menage Check</button>
+        </div>
+    </div>
+
+    <script>
+        function openPage(page) {
+    window.location.href = page;
+}
+
+    </script>
+</body>
+</html>
