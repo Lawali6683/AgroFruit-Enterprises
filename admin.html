@@ -66,7 +66,7 @@
       header nav p {
           margin: 0;
           font-size: 18px;
-          Text-align: center;
+          text-align: center;
       }
 
       main {
@@ -77,9 +77,8 @@
           width: 100%;
           border-collapse: collapse;
           margin: 20px 0;
-          font-size: 8px;
-          Font-weight: bold;
-          
+          font-size: 14px;
+          font-weight: bold;
       }
 
       table th, table td {
@@ -100,7 +99,7 @@
           margin: 10px 0;
           font-size: 14px;
           font-weight: bold;
-          Text-align: center;
+          text-align: center;
       }
 
       .summary2 span {
@@ -122,7 +121,19 @@
       .link-btn:hover {
           background-color: #0056b3;
       }
-  </style>  
+
+      .button-group {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+      }
+
+      .button-group button {
+          width: auto;
+          padding: 5px 10px;
+          font-size: 14px;
+      }
+  </style>
 </head>
 <body>
   <div id="login-section" class="center">
@@ -140,13 +151,13 @@
     <header>
       <h1>Admin Dashboard</h1>
       <nav>
-        <p>Total Registered Users: <span id="total-users">0</span></p>                  
+        <p>Total Registered Users: <span id="total-users">0</span></p>
       </nav>
     </header>
     <div class="summary2">
       <p>Users Daily Income Total: ₦<span id="daily-income-total">0.00</span></p>
       <p>Users Withdrawal Balance Total: ₦<span id="withdrawal-balance-total">0.00</span></p>
-      <p>Total Users Invest: ₦<span id="total-invested">0.00</span></p>      
+      <p>Total Users Invest: ₦<span id="total-invested">0.00</span></p>
     </div>
 
     <main>
@@ -160,6 +171,7 @@
               <th>Investment (₦)</th>
               <th>Daily Income (₦)</th>
               <th>Withdrawal Balance (₦)</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -174,210 +186,213 @@
             <th>User ID</th>
             <th>Full Name</th>
             <th>Referrals</th>
+            <th>Paystack Customer ID</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
 
-      <h3>Top 20 Users by Referral Register Count</h3>
-      <table id="top-referral-count-table">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>User ID</th>
-            <th>Full Name</th>
-            <th>Referral Register Count</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <script type="module">
+        import { app, analytics, firebaseConfig } from './firebase.js';
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-      <section>
-        <h2>Withdrawal History</h2>
-        <table id="withdrawal-history">
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Amount (₦)</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+        // Initialize Firebase
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-      <button id="showResultsButton">Show Results</button>
+        // Admin emails
+        const allowedEmails = ["agrofruitenterprises@gmail.com", "harunalawali5522@gmail.com", "lawaliharuna943@gmail.com"];
 
-      <section id="result-received" class="hidden">
-        <h2>Results Received</h2>
-        <form id="result-form">
-          <label for="amount">Amount:</label>
-          <input type="number" id="amount" placeholder="Enter Amount" required>
-          <label for="bank-number">Admin Bank Number:</label>
-          <input type="text" id="bank-number" placeholder="Enter Bank Number" required>
-          <label for="account-name">Admin Account Name:</label>
-          <input type="text" id="account-name" placeholder="Enter Account Name" required>
-          <label for="admin-bank-code">Admin Bank Code:</label>
-          <input type="text" id="admin-bank-code" placeholder="Enter Bank Code" required>
-          <label for="admin-password">Admin Password:</label>
-          <input type="password" id="admin-password" placeholder="Enter Password" required>
-          <label for="email">Admin Email Address:</label>
-          <input type="email" id="result-email" placeholder="Enter Admin Email Address" required>
-          <label for="secondary-password">Secondary Admin Password:</label>
-          <input type="password" id="secondary-password" placeholder="Enter Secondary Password" required>
-          <button type="submit">Submit</button>
-        </form>
-      </section>
-    </main>
-  </div> 
-  <p>
-       <a href="costumesChecking.html" class="link-btn">Costumes Checking</a>
-  </p>
+        // DOM Elements
+        const loginForm = document.getElementById("loginForm");
+        const adminPanel = document.getElementById("admin-panel");
+        const loginSection = document.getElementById("login-section");
+        const usersTableBody = document.querySelector("#users-table tbody");
+        const totalUsers = document.getElementById("total-users");
+        const totalInvested = document.getElementById("total-invested");
+        const dailyIncomeTotalEl = document.getElementById("daily-income-total");
+        const withdrawalBalanceTotalEl = document.getElementById("withdrawal-balance-total");
+        const topReferralsTable = document.querySelector("#top-referrals-table tbody");
+        const topReferralCountTable = document.querySelector("#top-referral-count-table tbody");
 
-<p>
-       <a href="payment.html" class="link-btn">Check Withdrawal Payments</a>
-  </p>
-  
-  <p>
-       <a href="comfim.html" class="link-btn">Check Withdrawal</a>
-  </p>
+        // Handle Admin Login
+        loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
 
-  <a href="dataAdmin.html" class="link-btn">Data Payment</a>
-  
-  <script type="module">
-  import { app, analytics, firebaseConfig } from './firebase.js'; 
-      
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+          if (!allowedEmails.includes(email)) {
+            alert("Unauthorized email! Please use an approved admin email.");
+            return;
+          }
 
-  
-  // Initialize Firebase  
-  const auth = getAuth(app);
-  const db = getDatabase(app);
+          try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Login successful!");
+            verifyAdminPassword();
+          } catch (error) {
+            alert("Login failed! Please check your credentials.");
+            console.error(error);
+          }
+        });
 
-  // Admin emails
-  const allowedEmails = ["agrofruitenterprises@gmail.com", "harunalawali5522@gmail.com", "lawaliharuna943@gmail.com"];
+        // Verify Admin Password
+        async function verifyAdminPassword() {
+          const enteredPassword = prompt("Please enter the admin password:");
 
-  // DOM Elements
-  const loginForm = document.getElementById("loginForm");
-  const adminPanel = document.getElementById("admin-panel");
-  const loginSection = document.getElementById("login-section");
-  const usersTableBody = document.querySelector("#users-table tbody");
-  const totalUsers = document.getElementById("total-users");
-  const totalInvested = document.getElementById("total-invested");
-  const dailyIncomeTotalEl = document.getElementById("daily-income-total");
-  const withdrawalBalanceTotalEl = document.getElementById("withdrawal-balance-total");
-  const topReferralsTable = document.querySelector("#top-referrals-table tbody");
+          if (enteredPassword !== "Haruna@66") {
+            alert("Incorrect password! You cannot access the admin dashboard.");
+            return;
+          }
 
-  // Handle Admin Login
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    if (!allowedEmails.includes(email)) {
-      alert("Unauthorized email! Please use an approved admin email.");
-      return;
-    }
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
-      verifyAdminPassword();
-    } catch (error) {
-      alert("Login failed! Please check your credentials.");
-      console.error(error);
-    }
-  });
-
-  // Verify Admin Password
-  async function verifyAdminPassword() {
-    const enteredPassword = prompt("Please enter the admin password:");
-
-    if (enteredPassword !== "Haruna@66") {
-      alert("Incorrect password! You cannot access the admin dashboard.");
-      return;
-    }
-
-    loadDashboard();
-  }
-
-  // Load Admin Dashboard
-  async function loadDashboard() {
-    loginSection.style.display = "none";
-    adminPanel.style.display = "block";
-
-    const usersSnapshot = await get(ref(db, "users"));
-    const usersData = usersSnapshot.val();
-
-    let totalUsersCount = 0;
-    let totalInvestedAmount = 0;
-    let totalDailyIncomeAmount = 0;
-    let totalWithdrawalBalanceAmount = 0;
-    const referralData = {};
-
-    usersTableBody.innerHTML = "";
-    for (const userId in usersData) {
-      const user = usersData[userId];
-      const investment = parseFloat(user.investment || 0);
-      const dailyIncome = parseFloat(user.dailyUpgrade || 0);
-      const withdrawalBalance = parseFloat(user.userBalance || 0);
-
-      const row = `
-        <tr>
-          <td>${user.email}</td>
-          <td>${user.fullName}</td>
-          <td>₦${investment.toFixed(2)}</td>
-          <td>₦${dailyIncome.toFixed(2)}</td>
-          <td>₦${withdrawalBalance.toFixed(2)}</td>
-        </tr>
-      `;
-      usersTableBody.insertAdjacentHTML("beforeend", row);
-
-      totalUsersCount++;
-      totalInvestedAmount += investment;
-      totalDailyIncomeAmount += dailyIncome;
-      totalWithdrawalBalanceAmount += withdrawalBalance;
-
-      // Handle referral data
-      const referralBy = user.referralBy || null;
-      if (referralBy) {
-        if (!referralData[referralBy]) {
-          referralData[referralBy] = { count: 0, fullName: usersData[referralBy]?.fullName || "Unknown" };
+          loadDashboard();
         }
-        referralData[referralBy].count++;
-      }
-    }
 
-    totalUsers.textContent = totalUsersCount;
-    totalInvested.textContent = totalInvestedAmount.toFixed(2);
-    dailyIncomeTotalEl.textContent = totalDailyIncomeAmount.toFixed(2);
-    withdrawalBalanceTotalEl.textContent = totalWithdrawalBalanceAmount.toFixed(2);
+        // Load Admin Dashboard
+        async function loadDashboard() {
+          loginSection.style.display = "none";
+          adminPanel.style.display = "block";
 
-    displayTopReferrals(referralData);
-  }
+          const usersSnapshot = await get(ref(db, "users"));
+          const usersData = usersSnapshot.val();
 
-  // Display Top Referrals
-  function displayTopReferrals(referralData) {
-    const sortedReferrals = Object.entries(referralData)
-      .sort(([, a], [, b]) => b.count - a.count)
-      .slice(0, 20);
+          let totalUsersCount = 0;
+          let totalInvestedAmount = 0;
+          let totalDailyIncomeAmount = 0;
+          let totalWithdrawalBalanceAmount = 0;
+          const referralData = {};
+          const referralRegisterCountData = {};
 
-    topReferralsTable.innerHTML = ""; // Clear previous data
+          usersTableBody.innerHTML = "";
+          for (const userId in usersData) {
+            const user = usersData[userId];
+            const investment = parseFloat(user.investment || 0);
+            const dailyIncome = parseFloat(user.dailyUpgrade || 0);
+            const withdrawalBalance = parseFloat(user.userBalance || 0);
 
-    sortedReferrals.forEach(([userId, data], index) => {
-      const row = `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${data.fullName}</td>
-          <td>${data.count} referrals</td>
-        </tr>
-      `;
-      topReferralsTable.insertAdjacentHTML("beforeend", row);
-    });
-  }
-</script>
+            const row = `
+              <tr>
+                <td>${user.email}</td>
+                <td>${user.fullName}</td>
+                <td>₦${investment.toFixed(2)}</td>
+                <td>₦${dailyIncome.toFixed(2)}</td>
+                <td>₦${withdrawalBalance.toFixed(2)}</td>
+                <td class="button-group">
+                  <button onclick="toggleUserStatus('${userId}', ${user.suspended})">${user.suspended ? 'Unsuspend' : 'Suspend'}</button>
+                  <button class="gh" onclick="deleteUser('${userId}')">Delete</button>
+                </td>
+              </tr>
+            `;
+            usersTableBody.insertAdjacentHTML("beforeend", row);
+
+            totalUsersCount++;
+            totalInvestedAmount += investment;
+            totalDailyIncomeAmount += dailyIncome;
+            totalWithdrawalBalanceAmount += withdrawalBalance;
+
+            // Handle referral data
+            const referralBy = user.referralBy || null;
+            if (referralBy) {
+              if (!referralData[referralBy]) {
+                referralData[referralBy] = {
+                  count: 0,
+                  fullName: usersData[referralBy]?.fullName || "Unknown",
+                  paystackCustomerId: usersData[referralBy]?.paystackCustomerId || "Unknown",
+                  referralCode: usersData[referralBy]?.referralCode || "Unknown",
+                  referralBy: usersData[referralBy]?.referralBy || "Unknown"
+                };
+              }
+              referralData[referralBy].count++;
+            }
+
+            // Handle referral register count data
+            const referralRegisterCount = user.referralRegisterCount || 0;
+            if (!referralRegisterCountData[userId]) {
+              referralRegisterCountData[userId] = { count: referralRegisterCount, fullName: user.fullName || "Unknown" };
+            }
+          }
+
+          totalUsers.textContent = totalUsersCount;
+          totalInvested.textContent = totalInvestedAmount.toFixed(2);
+          dailyIncomeTotalEl.textContent = totalDailyIncomeAmount.toFixed(2);
+          withdrawalBalanceTotalEl.textContent = totalWithdrawalBalanceAmount.toFixed(2);
+
+          displayTopReferrals(referralData);
+          displayTopReferralRegisterCounts(referralRegisterCountData);
+        }
+
+        // Toggle User Status (Suspend/Unsuspend)
+        window.toggleUserStatus = async function toggleUserStatus(userId, isSuspended) {
+          try {
+            await update(ref(db, `users/${userId}`), { suspended: !isSuspended });
+            alert(`User ${isSuspended ? 'unsuspended' : 'suspended'} successfully!`);
+            loadDashboard();
+          } catch (error) {
+            console.error("Error updating user status:", error);
+            alert("Failed to update user status. Please try again.");
+          }
+        }
+
+        // Delete User
+        window.deleteUser = async function deleteUser(userId) {
+          if (confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+            try {
+              await remove(ref(db, `users/${userId}`));
+              alert("User deleted successfully!");
+              loadDashboard();
+            } catch (error) {
+              console.error("Error deleting user:", error);
+              alert("Failed to delete user. Please try again.");
+            }
+          }
+        }
+
+        // Display Top Referrals
+        function displayTopReferrals(referralData) {
+          const sortedReferrals = Object.entries(referralData)
+            .sort(([, a], [, b]) => b.count - a.count)
+            .slice(0, 20);
+
+          topReferralsTable.innerHTML = ""; // Clear previous data
+
+          sortedReferrals.forEach(([userId, data], index) => {
+            const row = `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${userId}</td>
+                <td>${data.fullName}</td>
+                <td>${data.count}</td>
+                <td>${data.paystackCustomerId}</td>
+              </tr>
+            `;
+            topReferralsTable.insertAdjacentHTML("beforeend", row);
+          });
+        }
+
+        // Display Top Referral Register Counts
+        function displayTopReferralRegisterCounts(referralRegisterCountData) {
+          const sortedReferralRegisterCounts = Object.entries(referralRegisterCountData)
+            .sort(([, a], [, b]) => b.count - a.count)
+            .slice(0, 20);
+
+          topReferralCountTable.innerHTML = ""; // Clear previous data
+
+          sortedReferralRegisterCounts.forEach(([userId, data], index) => {
+            const row = `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${userId}</td>
+                <td>${data.fullName}</td>
+                <td>${data.count}</td>
+              </tr>
+            `;
+            topReferralCountTable.insertAdjacentHTML("beforeend", row);
+          });
+        }
+      </script>
+    </main>
+  </div>
 </body>
 </html>
