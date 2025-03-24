@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ha">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Tracking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- LOGIN SECTION -->
+    <style>
+       
+body {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+#login-section, #users-section {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    color: #fff;
+}
+
+input, button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+input {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+button {
+    background: #ff7b00;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+}
+
+button:hover {
+    background: #ff9a3d;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    Font-size: 13px;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+th {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+td {
+    color: #fff;
+}
+
+/* Logout Button */
+button.logout {
+    background: #ff3b3b;
+    margin-top: 20px;
+}
+
+button.logout:hover {
+    background: #ff6767;
+}
+
+    </style>
+    <div id="login-section">
+        <h2>login </h2>
+        <input type="email" id="email" placeholder="Shigar da Email">
+        <input type="password" id="password" placeholder="Shigar da Kalmar sirri">
+        <button onclick="loginUser()">Shiga</button>
+        <p id="error-message"></p>
+    </div>
+    
+    <div id="users-section" style="display: none;">
+        <h2>All Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Referrals</th>
+                </tr>
+            </thead>
+            <tbody id="users-table"></tbody>
+        </table>
+        <button onclick="logoutUser()">Fita</button>
+    </div>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module">
+        import { app } from './firebase.js';
+import { 
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+const auth = getAuth(app);
+const db = getDatabase(app);
+const loginSection = document.getElementById("login-section");
+const usersSection = document.getElementById("users-section");
+const usersTable = document.getElementById("users-table");
+
+// **Login Function**
+window.loginUser = function () {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let errorMessage = document.getElementById("error-message");
+
+    signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+            errorMessage.innerText = "";
+        })
+        .catch((error) => {
+            errorMessage.innerText = "Login ya kasa, duba email ko password!";
+        });
+};
+
+// **Logout Function**
+window.logoutUser = function () {
+    signOut(auth).then(() => {
+        loginSection.style.display = "block";
+        usersSection.style.display = "none";
+    });
+};
+
+// **Track Authentication State**
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loginSection.style.display = "none";
+        usersSection.style.display = "block";
+        fetchUsers();
+    } else {
+        loginSection.style.display = "block";
+        usersSection.style.display = "none";
+    }
+});
+
+// **Function don Karanta Bayanai**
+async function fetchUsers() {
+    const usersRef = ref(db, "users");
+    const snapshot = await get(usersRef);
+
+    if (snapshot.exists()) {
+        let users = snapshot.val();
+        let userArray = Object.values(users);
+
+        // **Kirga referrals**
+        userArray.forEach(user => {
+            let count = 0;
+            userArray.forEach(u => {
+                if (u.referralBy === user.referralCode && u.tsohonUser === "yes") {
+                    count++;
+                }
+            });
+            user.referralCount = count;
+        });
+
+        // **Sorting by referrals count**
+        userArray.sort((a, b) => b.referralCount - a.referralCount);
+
+        // **Cike teburin da bayanai**
+        usersTable.innerHTML = "";
+        userArray.forEach(user => {
+            let row = `<tr>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td>${user.phoneNumber}</td>
+                <td>${user.referralCount}</td>
+            </tr>`;
+            usersTable.innerHTML += row;
+        });
+    } else {
+        usersTable.innerHTML = "<tr><td colspan='4'>Babu bayanai.</td></tr>";
+    }
+}
+
+    </script>
+</body>
+</html>
