@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroFruit - Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 50px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>AgroFruit - Send Promotional Email</h1>
+    <button id="sendEmailBtn">Send Email</button>
+    <p id="message"></p>
+    <script>
+        document.getElementById("sendEmailBtn").addEventListener("click", function() {
+            fetch("https://fruit-ruddy.vercel.app/api/email")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        alert("Email sent successfully!");
+                        document.getElementById("message").innerText = data.message;
+                    } else {
+                        alert("Error sending email.");
+                        document.getElementById("message").innerText = "Error sending email.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error sending email.");
+                    document.getElementById("message").innerText = "Error sending email.";
+                });
+        });
+    </script>
+</body>
+</html>
