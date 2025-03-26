@@ -195,6 +195,10 @@
         </div>
     </div>
               
+      
+
+
+              
        <script type="module">
     import { app, analytics, firebaseConfig } from './firebase.js';
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
@@ -324,7 +328,7 @@
         endDate.setDate(startDate.getDate() + (matchedPlan.days || 0));
         const remainingDays = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24));
 
-        const amount = Math.floor(withdrawalData.amount || 0); // Remove decimal part
+        const amount = withdrawalData.amount || 0;
         const accountName = withdrawalData.accountName || "N/A";
         const bankName = withdrawalData.bankName || "N/A";
         const bankCode = withdrawalData.bankCode || "N/A";
@@ -410,7 +414,7 @@
                             networkFee += parseFloat(withdrawalData.amount) * 0.09;
 
                             const successfulWithdrawalRef = ref(database, `users/${userId}/withdrawalSuccessful`);
-                            get(successSnapshot => {
+                            get(successfulWithdrawalRef).then(successSnapshot => {
                                 let successfulWithdrawals = successSnapshot.val();
                                 if (!Array.isArray(successfulWithdrawals)) {
                                     successfulWithdrawals = [];
@@ -451,13 +455,13 @@
                                         console.error("Error fetching total withdrawals:", error);
                                     });
                                 }).catch(error => {
-                                    console.error("Error fetching successful withdrawals:", error);
+                                    console.error("Error fetching total payment:", error);
                                 });
                             }).catch(error => {
-                                console.error("Error fetching network fee:", error);
+                                console.error("Error fetching successful withdrawals:", error);
                             });
                         }).catch(error => {
-                            console.error("Error fetching admin user data:", error);
+                            console.error("Error fetching network fee:", error);
                         });
                     } else {
                         console.error("Admin user not found");
@@ -507,6 +511,6 @@
             copyToClipboard(accountNumber);
         }
     });
-</script>                                                                                                                                                       
+</script>                                                                                                                                                                                                                                                                                                                                                
 </body>
 </html>
