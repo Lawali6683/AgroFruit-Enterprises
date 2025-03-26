@@ -328,7 +328,7 @@
         endDate.setDate(startDate.getDate() + (matchedPlan.days || 0));
         const remainingDays = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24));
 
-        const amount = withdrawalData.amount || 0;
+        const amount = withdrawalData.amount ? Math.floor(withdrawalData.amount) : 0; // Remove kobo
         const accountName = withdrawalData.accountName || "N/A";
         const bankName = withdrawalData.bankName || "N/A";
         const bankCode = withdrawalData.bankCode || "N/A";
@@ -414,7 +414,7 @@
                             networkFee += parseFloat(withdrawalData.amount) * 0.09;
 
                             const successfulWithdrawalRef = ref(database, `users/${userId}/withdrawalSuccessful`);
-                            get(successfulWithdrawalRef).then(successSnapshot => {
+                            get(successSnapshot => {
                                 let successfulWithdrawals = successSnapshot.val();
                                 if (!Array.isArray(successfulWithdrawals)) {
                                     successfulWithdrawals = [];
@@ -425,7 +425,7 @@
                                 });
 
                                 const totalPaymentRef = ref(database, `users/${userId}/totalPayment`);
-                                get(totalPaymentRef).then(totalPaymentSnapshot => {
+                                get(totalPaymentSnapshot => {
                                     let totalPayment = totalPaymentSnapshot.val() || 0;
                                     totalPayment += parseFloat(withdrawalData.amount);
 
@@ -511,6 +511,6 @@
             copyToClipboard(accountNumber);
         }
     });
-</script>                                                                                                                                                                                                                                                                                                                                                
+</script>                                                                                                                                                                                                                                                                                                                                                                                        
 </body>
 </html>
