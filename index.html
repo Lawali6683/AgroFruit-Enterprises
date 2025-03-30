@@ -173,6 +173,7 @@
     <!-- Menu -->
     <nav id="menu">
         <ul>
+             
             <li>Contact us</li>
             <li>Contact us for more information</li>
             <li>Contact for investment</li>
@@ -205,6 +206,103 @@
             <button onclick="checkWorker()">Submit</button>
         </div>
         
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+        .header {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 10px 0;
+        }
+        .product {
+            background: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .product:hover {
+            transform: scale(1.05);
+        }
+        .product img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .product h3 {
+            margin: 10px 0;
+            color: #27ae60;
+            font-size: 20px;
+        }
+        .product p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .contact {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 18px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">AgroFruit Market - Fresh & Quality Produce</div>
+        <p style="text-align: center; color: #666; font-size: 16px;">From Zamfara to Lagos, Cross River, Enugu, Oyo, Taraba, and Ibadan.</p>
+        
+        <div class="products">
+            <div class="product">
+                <img src="tu.png" alt="Fresh Tomatoes">
+                <h3>Fresh Tomatoes</h3>
+                <p>High-quality, farm-fresh tomatoes harvested for maximum freshness.</p>
+            </div>
+            <div class="product">
+                <img src="al.png" alt="Onions">
+                <h3>Premium Onions</h3>
+                <p>Red and white onions sourced directly from trusted farmers.</p>
+            </div>
+            <div class="product">
+                <img src="ta.png" alt="Pepper">
+                <h3>Spicy Peppers</h3>
+                <p>Hot and fresh peppers to give your meals the best taste.</p>
+            </div>
+            <div class="product">
+                <img src="tat.png" alt="Red Bell Pepper">
+                <h3>Red Bell Peppers</h3>
+                <p>Sweet and fresh red bell peppers for your cooking needs.</p>
+            </div>
+        </div>
+
+        <div class="contact">
+            Need to register? Contact AgroFruit Admin to get started.
+        </div>
+    </div>
 
        
         <div class="investment-section">
